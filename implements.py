@@ -85,4 +85,5 @@ class Ball(Basic):
     def alive(self):
         # ============================================
         # TODO: Implement a service that returns whether the ball is alive or not
-        pass
+        # 공이 아래쪽으로 빠진다면 False 반환, 그렇지 않으면 True 반환
+        return self.rect.bottom < config.display_dimension[1]
