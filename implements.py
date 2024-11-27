@@ -68,7 +68,30 @@ class Ball(Basic):
     def collide_block(self, blocks: list):
         # ============================================
         # TODO: Implement an event when the ball hits a block
-        pass
+        # 공이 블록과 부딪혔을 때 이벤트 처리
+        for block in blocks[:]:
+            # 블록 살아있는지 확인, 공과 블록 두 직사각형이 겹치는지 확인
+            if block.alive and self.rect.colliderect(block.rect):
+                # 충돌 위치(겹친 픽셀 수)
+                overlap_left = self.rect.right - block.rect.left
+                overlap_right = block.rect.right - self.rect.left
+                overlap_top = self.rect.bottom - block.rect.top
+                overlap_bottom = block.rect.bottom - self.rect.top
+
+                # 가장 겹침이 작은 값 : 가장 빨리 충돌한 것
+                min_overlap = min(overlap_left, overlap_right, overlap_top, overlap_bottom)
+
+                # 가로면 충돌 (상단 또는 하단)
+                if min_overlap == overlap_top or min_overlap == overlap_bottom:
+                    self.dir = 360 - self.dir
+                # 세로면 충돌 (왼쪽 또는 오른쪽)
+                elif min_overlap == overlap_left or min_overlap == overlap_right:
+                    self.dir = 180 - self.dir
+            
+                # 블록의 collide 메서드 호출
+                block.collide(blocks) # 블록 비활성화
+
+                break # 첫 번재 충돌 후 반복 종료
 
     def collide_paddle(self, paddle: Paddle) -> None:
         if self.rect.colliderect(paddle.rect):
