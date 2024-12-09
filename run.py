@@ -44,6 +44,9 @@ def tick():
     global paddle
     global ball1
     global start
+    global cur_score
+    cur_score = config.num_blocks[0] * config.num_blocks[1] - len(BLOCKS)
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -56,6 +59,22 @@ def tick():
                 start = True
             paddle.move_paddle(event)
 
+    for item in ITEMS[:]:
+        item.move()
+        if item.collide_paddle(paddle):
+            # Paddle과 아이템이 충돌했을 때 처리
+            if item.color == (255, 0, 0):  # 빨간색 아이템
+                # 빨간색 아이템 효과: 예를 들어 점수 증가
+                pass
+            elif item.color == (0, 0, 255):  # 파란색 아이템
+                # 파란색 아이템 효과: 예를 들어 공 추가
+                new_ball = Ball()
+                pass
+        
+            ITEMS.remove(item)  # 아이템 제거
+        elif item.rect.top > config.display_dimension[1]:  # 화면 밖으로 나간 경우
+            ITEMS.remove(item)
+
     for ball in BALLS:
         if start:
             ball.move()
@@ -63,7 +82,7 @@ def tick():
             ball.rect.centerx = paddle.rect.centerx
             ball.rect.bottom = paddle.rect.top
 
-        ball.collide_block(BLOCKS)
+        ball.collide_block(BLOCKS,ITEMS)
         ball.collide_paddle(paddle)
         ball.hit_wall()
         if ball.alive() == False:
@@ -82,16 +101,19 @@ def main():
     mess_clear = my_font.render("Cleared!", True, config.colors[2])
     mess_over = my_font.render("Game Over!", True, config.colors[2])
     create_blocks()
-
+    
     while True:
+       
         tick()
         surface.fill((0, 0, 0))
+        for item in ITEMS:
+            item.draw(surface)
         paddle.draw(surface)
 
         for block in BLOCKS:
             block.draw(surface)
 
-        cur_score = config.num_blocks[0] * config.num_blocks[1] - len(BLOCKS)
+        
 
         score_txt = my_font.render(f"Score : {cur_score * 10}", True, config.colors[2])
         life_font = my_font.render(f"Life: {life}", True, config.colors[0])

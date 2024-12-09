@@ -33,14 +33,18 @@ class Block(Basic):
     def draw(self, surface) -> None:
         pygame.draw.rect(surface, self.color, self.rect)
     
-    def collide(self, blocks: list):
+    def collide(self, blocks: list,items: list):
         # ============================================
         # TODO: Implement an event when block collides with a ball
         # 블록이 공과 충돌했을 대 이벤트 처리
         self.alive = False # 블록 제거
         if self in blocks:
             blocks.remove(self) # blocks 리스트에서 블록 삭제
-
+        # 아이템 생성 (20% 확률)
+        if random.random() < config.item_drop_prob:
+            item_color = random.choice(config.item_colors)
+            item = Item(item_color, (self.rect.centerx, self.rect.centery))
+            items.append(item)
 
 class Paddle(Basic):
     def __init__(self):
@@ -58,6 +62,17 @@ class Paddle(Basic):
         elif event.key == K_RIGHT and self.rect.right < config.display_dimension[0]:
             self.rect.move_ip(self.speed, 0)
 
+class Item(Basic):
+    def __init__(self, color: tuple, pos: tuple):
+        super().__init__(color, config.item_speed, pos, config.item_size)
+    
+    def draw(self, surface):
+        pygame.draw.ellipse(surface, self.color, self.rect)
+
+    def collide_paddle(self, paddle: Paddle):
+        # Paddle과 충돌 여부 확인
+        return self.rect.colliderect(paddle.rect)
+
 
 class Ball(Basic):
     def __init__(self, pos: tuple = config.ball_pos):
@@ -68,7 +83,7 @@ class Ball(Basic):
     def draw(self, surface):
         pygame.draw.ellipse(surface, self.color, self.rect)
 
-    def collide_block(self, blocks: list):
+    def collide_block(self, blocks: list,items: list):
         # ============================================
         # TODO: Implement an event when the ball hits a block
         # 공이 블록과 부딪혔을 때 이벤트 처리
@@ -92,7 +107,7 @@ class Ball(Basic):
                     self.dir = 180 - self.dir
             
                 # 블록의 collide 메서드 호출
-                block.collide(blocks) # 블록 비활성화
+                block.collide(blocks,items) # 블록 비활성화
 
                 break # 첫 번재 충돌 후 반복 종료
 
@@ -115,4 +130,4 @@ class Ball(Basic):
         # ============================================
         # TODO: Implement a service that returns whether the ball is alive or not
         # 공이 아래쪽으로 빠진다면 False 반환, 그렇지 않으면 True 반환
-        return self.rect.bottom < config.display_dimension[1]
+            return self.rect.bottom < config.display_dimension[1]
