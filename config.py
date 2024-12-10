@@ -11,7 +11,7 @@ score_pos = (10, 10)
 life_pos = (450, 10)
 
 # Display setting
-fps = 30
+fps =30
 wall_width = 10
 scoreboard_height = 50
 gameboard_height_coefficient = 3
