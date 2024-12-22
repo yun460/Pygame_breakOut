@@ -33,7 +33,7 @@ class Block(Basic):
     def draw(self, surface) -> None:
         pygame.draw.rect(surface, self.color, self.rect)
     
-    def collide(self, blocks: list,items: list):
+    def collide(self, blocks: list):
         # ============================================
         # TODO: Implement an event when block collides with a ball
         # 블록이 공과 충돌했을 대 이벤트 처리
@@ -42,9 +42,10 @@ class Block(Basic):
             blocks.remove(self) # blocks 리스트에서 블록 삭제
         # 아이템 생성 (20% 확률)
         if random.random() < config.item_drop_prob:
+            from __main__ import ITEMS  # 동적 import로 순환 참조 방지
             item_color = random.choice(config.item_colors)
-            item = Item(item_color, (self.rect.centerx, self.rect.centery))
-            items.append(item)
+            item = Item(item_color, self.rect.center)
+            ITEMS.append(item)
 
 class Paddle(Basic):
     def __init__(self):
@@ -83,7 +84,7 @@ class Ball(Basic):
     def draw(self, surface):
         pygame.draw.ellipse(surface, self.color, self.rect)
 
-    def collide_block(self, blocks: list,items: list):
+    def collide_block(self, blocks: list):
         # ============================================
         # TODO: Implement an event when the ball hits a block
         # 공이 블록과 부딪혔을 때 이벤트 처리
@@ -107,7 +108,7 @@ class Ball(Basic):
                     self.dir = 180 - self.dir
             
                 # 블록의 collide 메서드 호출
-                block.collide(blocks,items) # 블록 비활성화
+                block.collide(blocks) # 블록 비활성화
 
                 break # 첫 번재 충돌 후 반복 종료
 
