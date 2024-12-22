@@ -68,8 +68,13 @@ def tick():
                 pass
             elif item.color == (0, 0, 255):  # 파란색 아이템
                 # 파란색 아이템 효과: 예를 들어 공 추가
-                new_ball = Ball()
-                pass
+                # 파란색 아이템 효과: 공 3개로 만들기
+                new_balls = []
+                for ball in BALLS:  # 기존 공을 3배로 만들기
+                    for _ in range(2):  # 기존 공을 복제해서 3개로 만들기
+                        new_ball = Ball(pos=ball.rect.center)  # 기존 공 위치에서 새로운 공 생성
+                        new_balls.append(new_ball)
+                BALLS.extend(new_balls)  # 새로운 공들을 BALLS 리스트에 추
         
             ITEMS.remove(item)  # 아이템 제거
         elif item.rect.top > config.display_dimension[1]:  # 화면 밖으로 나간 경우
