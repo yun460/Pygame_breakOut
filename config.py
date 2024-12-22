@@ -41,7 +41,7 @@ ball_size = (20, 20)
 
 item_size = (20, 20)  # 아이템 크기
 item_colors = [(255, 0, 0), (0, 0, 255)]  # 빨간색, 파란색 아이템
-item_drop_prob = 0.5  # 아이템 드롭 확률
+item_drop_prob = 0.2  # 아이템 드롭 확률
 item_speed = 5  # 아이템 낙하 속도
 one_more_prob = 0.3
 fever_prob = 0.1

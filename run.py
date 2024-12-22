@@ -35,6 +35,7 @@ def create_blocks():
             block = Block(color, (x, y))
             BLOCKS.append(block)
 
+MAX_BALLS = 10
 
 def tick():
     global life
@@ -69,12 +70,15 @@ def tick():
             elif item.color == (0, 0, 255):  # 파란색 아이템
                 # 파란색 아이템 효과: 예를 들어 공 추가
                 # 파란색 아이템 효과: 공 3개로 만들기
-                new_balls = []
-                for ball in BALLS:  # 기존 공을 3배로 만들기
-                    for _ in range(2):  # 기존 공을 복제해서 3개로 만들기
-                        new_ball = Ball(pos=ball.rect.center)  # 기존 공 위치에서 새로운 공 생성
-                        new_balls.append(new_ball)
-                BALLS.extend(new_balls)  # 새로운 공들을 BALLS 리스트에 추
+                if len(BALLS) < MAX_BALLS:  # 공의 개수가 최대 개수 이하일 때만 추가
+                    new_balls = []
+                    for ball in BALLS:  # 기존 공을 3배로 만들기
+                        if len(BALLS) + 2 <= MAX_BALLS:  # 최대 개수에 도달하면 복제하지 않음
+                            for _ in range(2):  # 기존 공을 복제해서 3개로 만들기
+                                new_ball = Ball(pos=ball.rect.center)  # 기존 공 위치에서 새로운 공 생성
+                                new_balls.append(new_ball)
+                    BALLS.extend(new_balls)  # 새로운 공들을 BALLS 리스트에 추가
+
         
             ITEMS.remove(item)  # 아이템 제거
         elif item.rect.top > config.display_dimension[1]:  # 화면 밖으로 나간 경우
